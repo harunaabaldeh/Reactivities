@@ -5,19 +5,38 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<DataContext>(options => {
+builder.Services.AddDbContext<DataContext>(options =>
+{
     options.UseSqlite(builder.Configuration.GetConnectionString("DafaultConnection"));
 });
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>
+{
+    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+}));
+
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("CorsPolicy", policy =>
+//     {
+//         policy
+//                .AllowAnyMethod()
+//                .AllowAnyHeader()
+//                .WithOrigins("http://localhost:3000");
+//     });
+// });
+
 
 var service = builder.Services.BuildServiceProvider();
 try
 {
-    var context  = service.GetRequiredService<DataContext>();
+    var context = service.GetRequiredService<DataContext>();
     context.Database.Migrate();
     await Seed.SeedData(context);
 }
@@ -39,6 +58,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
