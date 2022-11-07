@@ -19,6 +19,26 @@ export default class ActivityStore {
     );
   }
 
+  get groupedActivities() {
+    return Object.entries(
+      this.activitiesByDate.reduce((activities, activity) => {
+        const date = activity.date;
+        activities[date] = activities[date]
+          ? [...activities[date], activity]
+          : [activity];
+        return activities;
+      }, {} as { [key: string]: Activity[] })
+    );
+    // // let result = this.activitiesByDate.reduce((activities, activity) => {
+    // //   const date = activity.date!.toISOString().split("T")[0]!;
+    // //   activities[date] = activities[date] || [];
+    // //   activities[date].push(activity);
+    // //   return activities;
+    // // }, {} as { [key: string]: Activity[] });
+
+    // return Object.entries(result);
+  }
+
   loadActivities = async () => {
     this.setLoadingInitial(true);
     try {
