@@ -1,6 +1,8 @@
 using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
 using Domain;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +26,8 @@ namespace API.Extensions
 
             builder.Services.AddMediatR(typeof(List.Handler).Assembly);
             builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-            // var appContext = builder.Services.BuildServiceProvider().GetRequiredService<DataContext>();
-            // var userManager = builder.Services.BuildServiceProvider().GetRequiredService<UserManager<AppUser>>();
-            // await appContext.Database.MigrateAsync();
-            // await Seed.SeedData(appContext, userManager);
+            builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+
 
         }
     }
