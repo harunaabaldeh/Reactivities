@@ -2,6 +2,7 @@ using Application.Activities;
 using Application.Core;
 using Application.Interfaces;
 using Domain;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ namespace API.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static async void AddApplicationServices(this WebApplicationBuilder builder)
+        public static void AddApplicationServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddDbContext<DataContext>(options =>
             {
@@ -27,6 +28,8 @@ namespace API.Extensions
             builder.Services.AddMediatR(typeof(List.Handler).Assembly);
             builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+            builder.Services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
 
         }
